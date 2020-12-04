@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>todo</title>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+        }
+        
+        body {
+            background-color: #cdcdcd;
+        }
+        
+        header {
+            height: 50px;
+            background: rgba(47, 47, 47, 0.98);
+        }
+        
+        header div {
+            width: 500px;
+            margin: 0 auto;
+        }
+        
+        header input {
+            float: right;
+            width: 60%;
+            height: 24px;
+            margin-top: 12px;
+            text-indent: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.24), 0 1px 6px rgba(0, 0, 0, 0.45) inset;
+            border: none;
+        }
+        
+        header span {
+            float: left;
+            width: 100px;
+            line-height: 50px;
+            color: #ddd;
+            font-size: 24px;
+            cursor: pointer;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        
+        ul {
+            width: 500px;
+            margin: 0 auto;
+        }
+        
+        ul>span {
+            float: right;
+        }
+        
+        ul>h3 {
+            display: inline-block;
+        }
+        
+        li button {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div>
+                <span>ToDoList</span>
+                <input type="text" @keyup.enter="addToDo()" ref="addInput" placeholder="添加ToDo" />
+            </div>
+        </header>
+
+        <ul class="doing">
+            <h3>正在进行</h3>
+            <span>{{doingList.length}}</span>
+            <li v-for="item,index in doingList " :key="item">
+                <input type="checkbox" v-model="item.done" />
+                <span>{{item.str}}</span>
+                <button @click="deleteThing(item)">-</button>
+            </li>
+        </ul>
+
+        <ul class="done">
+            <h3>已完成</h3>
+            <span>{{doneList.length}}</span>
+            <li v-for="item,index in doneList " :key="item">
+                <input type="checkbox" v-model="item.done" />
+                <span>{{item.str}}</span>
+                <button @click="deleteThing(item)">-</button>
+            </li>
+        </ul>
+    </div>
+    <script>
+        let app = new Vue({
+            el: "#app ",
+            data: {
+                things: [],
+            },
+            methods: {
+                addToDo: function() {
+                    let str = this.$refs.addInput.value;
+                    let thing = {
+                        done: false,
+                        str,
+                    };
+                    this.things.push(thing);
+                    this.$refs.addInput.value = "";
+                },
+                deleteThing: function(item) {
+                    this.things.forEach((element, index) => {
+                        if (element == item) {
+                            this.things.splice(index, 1);
+                        }
+                    });
+                },
+            },
+            computed: {
+                doingList: function() {
+                    let doingList = this.things.filter((item) => {
+                        return item.done == false;
+                    });
+                    return doingList;
+                },
+                doneList: function() {
+                    let doneList = this.things.filter((item) => {
+                        return item.done == true;
+                    });
+                    return doneList;
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>
